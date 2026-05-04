@@ -1,0 +1,135 @@
+RASYONPRO - TICARET BORSASI FİYAT GÜNCELLEME SİSTEMİ
+====================================================
+
+✅ YAPILAN DEĞİŞİKLİKLER
+
+1. TmoFetcher.kt - GENIŞLETILDI
+   ────────────────────────────
+   • 7 FARKLI BORSA KAYNAĞINI DESTEKLER HALE GETİRİLDİ:
+     ✓ İzmir Ticaret Borsası (ITB)
+     ✓ Ankara Ticaret Borsası (ATB)
+     ✓ Adana Ticaret Borsası (ADATB)
+     ✓ Konya Ticaret Borsası
+     ✓ TMO (Toprak Mahsülleri Ofisi)
+     ✓ KOBIK (Piyasa Fiyatlandırması)
+     ✓ Tarım Bakanlığı (TEPGE)
+   
+   • fetchPrices() - TÜM BORSALARDAN PARALEL FİYAT ÇEKER
+     - Tüm kaynaklardan aynı anda fiyat alır
+     - Başarılı olanları birleştirir
+     - En fazla fiyatı bulunan kaynağı seçer
+   
+   • HER BORSA İÇİN AYRI PUBLIC FONKSİYON:
+     - fetchFromIzmir()
+     - fetchFromAnkara()
+     - fetchFromAdana()
+     - fetchFromKonya()
+     - fetchFromTmo()
+     - fetchFromKobik()
+     - fetchFromTarimGov()
+
+2. PriceUpdateFragment.kt - GÜNCELLENDİ
+   ────────────────────────────────────
+   • Auto Mode açıklaması geliştirildi
+   • 7 borsa kaynağı gösteriliyor
+   • Daha detaylı başarı mesajları
+   • Hata durumunda referans fiyatlar gösteriliyor
+
+3. PriceFetcherService.kt - YENİ DOSYA
+   ───────────────────────────────────
+   • Borsa kaynaklarını yönetme servisi
+   • Belirli borsalardan fiyat çekme
+   • Borsa listesi alma
+   • Bilgilendirici mesajlar
+
+
+🎯 NASIL ÇALIŞIYOR?
+═══════════════════
+
+MANUEL MOD:
+───────────
+→ Kullanıcı fiyatları kendisi girer
+→ Tüm yemlerin fiyatını istediği gibi ayarlayabilir
+→ Fiyatları kaydeder
+
+OTOMATİK MOD:
+─────────────
+→ "Otomatik Mod" butonuna tıklar
+→ Sistem 7 borsadan paralel olarak fiyat çeker:
+   • İzmir → Sebze, meyve, tarım ürünleri
+   • Ankara → Tahıl, yem ürünleri
+   • Adana → Pamuk, yan ürünler
+   • Konya → Bölge fiyatları
+   • TMO → Resmi alım fiyatları
+   • KOBIK → Piyasa fiyatlandırması
+   • Tarım Bakanlığı → TEPGE veri tabanı
+
+→ Başarılı kaynakları birleştirip uygulanır
+→ İnternet sorunu varsa → 2026 referans fiyatları yüklenir
+→ Yem listesinin tüm fiyatları güncellenir
+
+
+💾 VERITABANI GÜNCELLEMESI
+═══════════════════════════
+
+FeedDao.kt'de updatePrice() fonksiyonu:
+→ Belirli bir yem için fiyat güncellemesi
+→ Toplu güncelleme desteği
+
+
+🚀 KULLANIMA BAŞLAMA
+════════════════════
+
+1. App çalıştır
+2. FİYAT YÖNETİMİ butonuna tıkla
+3. "Otomatik Mod" seç
+4. Borsalardan çekilen fiyatları onayla
+5. "KAYDET" ile tüm fiyatları güncelle
+
+→ Artık tüm yemlerin fiyatları 7 farklı borsa kaynağından
+  güncel bilgilerle yüklü olacak!
+
+
+📊 TEKNIK DETAYLAR
+══════════════════
+
+OkHttp3 Client:
+- 15 saniye bağlantı zaman aşımı
+- 20 saniye okuma zaman aşımı
+- Redirect desteği
+
+HTML Parsing:
+- Jsoup kütüphanesi ile
+- Tablo hücrelerinden fiyat çıkarma
+- Türkçe karakter uyumluluğu
+
+Coroutine:
+- Dispatchers.IO ile arka plan işlemi
+- withContext() ile Main thread güvenliği
+
+
+📱 UI GÖSTERILERI
+═════════════════
+
+Auto Mode başlarken:
+"🌐 7 Ticaret Borsasından fiyatlar çekiliyor...
+  İzmir • Ankara • Adana • Konya • TMO • KOBIK • Tarım Bakanlığı"
+
+Başarıda:
+"✅ Çok Borsa (İzmir Borsası, Ankara Borsası, ...)
+  120 fiyat tüm borsalardan alındı"
+
+Başarısız (internet yok):
+"📋 Mart 2026 piyasa referans fiyatları yüklendi (150 yem)
+  💡 İnternet bağlantısı sağlandığında 7 Ticaret Borsasından 
+     güncel fiyatlar otomatik güncellenir."
+
+
+✨ SONUÇ
+════════
+
+RasyonPro artık:
+✅ TMO'dan değil, 7 TİCARET BORSASINDAN fiyat çeker
+✅ Tüm yemlerin fiyatları otomatik güncellenir
+✅ İnternet sorununda fallback sistemle çalışır
+✅ Kullanıcı dostu UI ile adım adım rehberlik eder

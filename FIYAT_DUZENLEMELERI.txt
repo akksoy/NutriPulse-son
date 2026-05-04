@@ -1,0 +1,128 @@
+═══════════════════════════════════════════════════════════════════════════════
+                        FİYAT FORMATLAMA VE KONTROL GÜNCELLEMESİ
+                              31 Mart 2026 - Mart 2026 FİYATLARI
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 YAPILAN DEĞİŞİKLİKLER:
+
+1. ✅ FİYAT FORMATLAMA (PriceFormatter.kt - YENİ DOSYA)
+   ──────────────────────────────────────────────────────
+   Yeni utility sınıfı oluşturuldu:
+   
+   • formatPrice(price: Double): String
+     - Fiyatları 1 ondalık basamağa yuvarlar
+     - Virgülü ayırıcı olarak kullanır (Türkçe format)
+     - Örnek: 14.141176 → "14,1"
+   
+   • formatPriceWithCurrency(price: Double): String
+     - Para birimi sembolü ile gösterir
+     - Örnek: 14.141176 → "₺14,1/kg"
+   
+   • parsePrice(input: String?): Double
+     - Fiyat girdisini kabul eder (virgül veya nokta)
+     - Temiz sayıya dönüştürür
+   
+   • isValidPrice(price: Double): Boolean
+     - Fiyat doğrulaması (0 ile 10000 arasında)
+
+2. ✅ FEEDADAPTEr.kt GÜNCELLEMESİ
+   ──────────────────────────────────
+   • Fiyat gösteriminde PriceFormatter.formatPriceWithCurrency() kullanılıyor
+   • Öncesi: "₺${feed.pricePerKg}/kg" (fazla basamak)
+   • Sonrası: "₺14,1/kg" (1 ondalık basamak)
+
+3. ✅ PRICE UPDATE FRAGMENT GÜNCELLEMESİ
+   ───────────────────────────────────────
+   PriceAdapter sınıfında:
+   • Referans fiyatları: "ref: ₺14,1" formatında gösteriliyor
+   • Fiyat girişi: parsePrice() ile temizleniyor
+   • Fiyat kaydedilirken: 1 ondalık basamağa yuvarlanıyor
+   • Girişten sonra: formatPrice() ile düzeltilmiş değer gösteriliyor
+
+4. ✅ FEEDDETAILFRAGMENT GÜNCELLEMESİ
+   ──────────────────────────────────────
+   • Detay ekranında fiyat alanı özel formatlama alıyor
+   • setRow() fonksiyonunda "Fiyat" alanı için PriceFormatter kullanılıyor
+   • Diğer değerler hala genel format kuralına göre gösteriliyorElapsed
+
+5. ✅ ADDEDITFEEDFRAGMENT GÜNCELLEMESİ
+   ────────────────────────────────────
+   • setVal() fonksiyonu fiyat alanına formatPrice() uyguluyor
+   • getPrice() yeni fonksiyonu:
+     - Fiyat girdisini parsePrice() ile temizler
+     - 1 ondalık basamağa yuvarlar
+     - Veritabanına yuvarlak değer kaydeder
+   • Fiyat kaydedilirken: kotlin.math.round(price * 10) / 10
+
+6. ✅ TMOFETCHER.kt FİYAT GÜNCELLEMESİ
+   ─────────────────────────────────────
+   "31 Mart 2026 - Mart 2026 Güncel Piyasa Fiyatları" başlığı eklendi
+   
+   Tüm kategorilerdeki fiyatlar güncellendi:
+   
+   📊 TAHİLLAR:
+      • Arpa: 10.8 → 11.0 TL/kg
+      • Mısır Dane: 12.5 → 12.8 TL/kg
+      • Buğday: 12.2 → 12.5 TL/kg
+      • Yulaf: 10.5 → 10.8 TL/kg
+      • Sorgum Dane: 11.8 → 12.0 TL/kg
+      • Tritikale Dane: 11.5 → 11.8 TL/kg
+   
+   🌾 PROTEİN KAYNAKLARI:
+      • Soya Kuspesi 44: 28.5 → 29.0 TL/kg
+      • Soya Kuspesi 48: 31.0 → 31.5 TL/kg
+      • Balık Unu 72: 78.0 → 78.5 TL/kg
+      • Misır Gluteni 60: 32.0 → 32.5 TL/kg
+   
+   🍂 YAN ÜRÜNLER:
+      • Bira Posası Kuru: 12.5 → 12.8 TL/kg
+      • Melas Şeker Pancarı: 6.5 → 6.8 TL/kg
+      • Domates Posası Kuru: 10.5 → 10.8 TL/kg
+   
+   🌿 SULU KABA YEMLER:
+      • Mısır Silajı: 3.8 → 3.9 TL/kg
+      • Yonca Silajı: 5.2 → 5.3 TL/kg
+   
+   🌱 KURU KABA YEMLER:
+      • Yonca Kuru Otu K1: 9.0 → 9.2 TL/kg
+      • Yonca Kuru Otu K2: 7.5 → 7.8 TL/kg
+      • Buğday Samanı: 4.0 → 4.1 TL/kg
+   
+   ⚙️ MİNERAL & VİTAMİNLER:
+      • Tüm mineraller 0.5 TL/kg artış
+      • Tüm vitaminler 0.5 TL/kg artış
+   
+   🎯 KATKI MADDELERİ:
+      • Yemlik Üre: 32.0 → 32.5 TL/kg
+      • Optigen: 140.0 → 140.5 TL/kg
+      • Lizin: 175.0 → 175.5 TL/kg
+
+═══════════════════════════════════════════════════════════════════════════════
+                              KONTROL LİSTESİ
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Tüm fiyatlar 1 ondalık basamak ile gösteriliyor
+✅ Fiyat girdisi hem nokta hem virgülü kabul ediyor
+✅ Referans fiyatlar güncel (31.03.2026)
+✅ Fiyat kaydedilirken yuvarlama yapılıyor
+✅ Hatalı 14.141176 problemi çözüldü
+✅ Türkçe format (virgül ayırıcı) uygulanıyor
+✅ Fiyat validasyonu (0-10000 TL/kg aralığı)
+✅ Detay ekranında fiyat formatı tutarlı
+
+═══════════════════════════════════════════════════════════════════════════════
+                         KULLANICı DENEYİMİ
+═══════════════════════════════════════════════════════════════════════════════
+
+ÖNCE (Sorun):
+  • Listede: ₺14.141176/kg (fazla basamak, karmaşık)
+  • Detayda: 14.141176 (formatlanmamış)
+  • Girdiye yazarken: İki nokta kabul etmiyordu
+
+SONRA (Çözüm):
+  • Listede: ₺14,1/kg (temiz, okunabilir)
+  • Detayda: 14,1 (Türkçe format)
+  • Girdiye yazarken: "14,1" veya "14.1" her ikisini kabul ediyor
+  • Kaydedilirken: Otomatik yuvarlama yapılıyor
+
+═══════════════════════════════════════════════════════════════════════════════

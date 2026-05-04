@@ -1,0 +1,8 @@
+// =============================================
+// DOSYA: settings.gradle
+// Gradle Scripts > settings.gradle
+// Varolan içeriği tamamen silip bunu yapıştır
+// =============================================
+
+include ':app'
+rootProject.name = "NutriPulse"
